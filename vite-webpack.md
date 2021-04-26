@@ -52,7 +52,16 @@
 
 ### 在构建方面有什么区别？
 
-![image-20210425153807238](/Users/chensai/Library/Application Support/typora-user-images/image-20210425153807238.png)
+- 开发模式下
+  - 编译阶段
+    - webpck先编译打包进内存，再交由server启动
+    - 直接按需编译，**不打包**，基于esm
+  - 运行时阶段
+    - webpack所有路径都可以加载
+    - Vite只能加载相对路径
+- 生产模式下
+  - webpack打包
+  - 基于rollup打包
 
 ### Vite做了什么？
 
@@ -60,16 +69,12 @@ vite提供了很多的配置选项，包括vite本身的配置，esbuild的配�
 
 vite其实是可以分为三部分的，一部分是开发过程中的client部分；一部分是开发过程中的server部分；另外一部分就是与生产有关系的打包编译部分，由于vite打包编译其实是用的rollup，我们不做解析，只看前两部分。
 
-#### vite-client
+针对Vue/Jsx做了什么？
 
- vite的client其实是作为一个单独的模块进行处理的，它的源码是放在`packages/vite/src/client`；这里面有四个文件：
-
-- client.ts： 主要的文件入口，下面着重介绍；
-- env.ts：环境相关的配置，这里会把我们在vite.config.js(vite配置文件)的define配置在这里进行处理；
-- overlay.ts: 这个是一个错误蒙层的展示，会把我们的错误信息进行展示；
-- tsconfig.json： 这就是ts的配置文件了。
-
-
+- 1.基于koa2开发服务器读取静态资源index.html
+- 2.基于浏览器无法读取第三方包并安装，只能先去替换一个别名，然后基于当前线程执行路径寻址node_modules下的依赖包
+- 3.找到第三方包去替换为node_modules下的路径
+- 解析Vue/Jsx的内容设置reponse header content-type为application/javascript，编译为js代码，让浏览器执行
 
 ### Q
 
